@@ -1,13 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-from django.test import LiveServerTestCase
+#from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
 
 MAX_WAIT = 10
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
     
     def setUp(self):
         self.browser = webdriver.Chrome()
@@ -53,7 +54,7 @@ class NewVisitorTest(LiveServerTestCase):
         # 他按了回车键后，页面更新了
         # 待办事项表格中显示了“1:Buy flowers”
         inputbox.send_keys(Keys.ENTER)  # (3)
-        self.wait_for_row_in_list_table('1:Buy flowers')
+        self.wait_for_row_in_list_table('1: Buy flowers')
 
         #table = self.browser.find_element(By.ID, 'id_list_table')
         #rows = table.find_elements(By.TAG_NAME, 'tr')  # (1)
@@ -71,8 +72,8 @@ class NewVisitorTest(LiveServerTestCase):
         #rows = table.find_elements(By.TAG_NAME, 'tr')
         #self.assertIn('1:Buy flowers', [row.text for row in rows])
         #self.assertIn('2:Give a gift to Lisi', [row.text for row in rows])
-        self.wait_for_row_in_list_table('1:Buy flowers')
-        self.wait_for_row_in_list_table('2:Give a gift to Lisi')
+        self.wait_for_row_in_list_table('1: Buy flowers')
+        self.wait_for_row_in_list_table('2: Give a gift to Lisi')
 
 
 
@@ -86,7 +87,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
         inputbox.send_keys('Buy flowers')
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1:Buy flowers')
+        self.wait_for_row_in_list_table('1: Buy flowers')
 
         # 他注意到他的清单URL中包含了一个唯一的编号
         zhangsan_list_url = self.browser.current_url
@@ -109,7 +110,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys('Buy milk')
 
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1:Buy milk')
+        self.wait_for_row_in_list_table('1: Buy milk')
 
         # 王五获得了一个唯一的URL
         wangwu_list_url = self.browser.current_url
@@ -135,6 +136,18 @@ class NewVisitorTest(LiveServerTestCase):
             512,
             delta=10
         )
+
+        # 他新建一个清单，看到输入框依然完美的居中显示
+        inputbox.send_keys('testing')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: testing')
+        inputbox = self.browser.find_element(By.ID, 'id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=10
+        )
+
 
 
 
