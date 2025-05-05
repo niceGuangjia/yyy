@@ -1,5 +1,11 @@
-ECHO 处于打开状态。
-"db.sqlite3"
-".DS_Store" 
-"__pycache__" 
-"*pyc" 
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python 缂栬瘧缂撳瓨
+__pycache__/
+*.pyc
